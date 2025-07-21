@@ -1,24 +1,28 @@
 package com.duettsoftware.backend.security;
 
 import com.duettsoftware.backend.model.User;
-import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
+import io.jsonwebtoken.security.Keys;
+import javax.crypto.SecretKey;
 
 @Component
 public class JwtUtil {
 
-    private final String SECRET_KEY = "duettsecretkey";
+    private final SecretKey secretKey;
+
+    public JwtUtil() {
+        this.secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    }
 
     public String generateToken(User user) {
-        return Jwts.builder()
+        return io.jsonwebtoken.Jwts.builder()
                 .setSubject(user.getEmail())
-                .claim("role", user.getPerfil())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10h
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .signWith(secretKey) 
                 .compact();
+    }
+
+    public SecretKey getSecretKey() {
+        return secretKey;
     }
 }
