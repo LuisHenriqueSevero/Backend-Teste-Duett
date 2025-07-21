@@ -18,14 +18,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/auth/**",
-                    "/h2-console/**",
-                    "/error",
-                    "/swagger-ui/**",          // Libera o Swagger UI
-                    "/v3/api-docs/**",         // Libera a documentação OpenAPI
-                    "/swagger-resources/**",   // Libera recursos do Swagger
-                    "/webjars/**"              // Libera dependências do Swagger
-                ).permitAll()
+                    "/auth/**", "/h2-console/**", "/error", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
                 .anyRequest().authenticated()
             )
             .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
