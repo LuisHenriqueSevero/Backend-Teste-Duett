@@ -48,9 +48,4 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
-
-    @GetMapping("/home")
-    public String home() {
-        return "Hola Mundo!";
-    }
 }
