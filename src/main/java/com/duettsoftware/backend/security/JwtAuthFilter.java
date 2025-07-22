@@ -11,14 +11,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.lang.NonNull;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Optional;
 
 @Component
@@ -31,10 +29,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private UserRepository userRepository;
 
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request,
-                                    @NonNull HttpServletResponse response,
-                                    @NonNull FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain
+    ) throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
 
@@ -59,13 +58,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 if (userOptional.isPresent()) {
                     User user = userOptional.get();
 
-                    // Criar authorities com base no perfil do usuário
-                    SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getPerfil());
-
                     UsernamePasswordAuthenticationToken authenticationToken =
                             new UsernamePasswordAuthenticationToken(
-                                    user, null,
-                                    Collections.singletonList(authority));
+                                    user, null, user.getAuthorities());
 
                     authenticationToken.setDetails(
                             new WebAuthenticationDetailsSource().buildDetails(request));
@@ -74,7 +69,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            // Token inválido, não autentica (deixa passar sem contexto de segurança)
+            // Token inválido ou expirado, não faz nada
         }
 
         filterChain.doFilter(request, response);
