@@ -20,7 +20,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     public void run(String... args) {
         if (userRepository.findByEmail("admin@admin.com").isEmpty()) {
             User admin = new User();
-            admin.setNome("Administrador");
+            admin.setNome("Master Admin");
             admin.setEmail("admin@admin.com");
             admin.setSenha(passwordEncoder.encode("admin123")); 
             admin.setCpf("11111111111");
@@ -31,7 +31,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         if (userRepository.findByEmail("usuario@teste.com").isEmpty()) {
             User usuario = new User();
-            usuario.setNome("Usuário Comum");
+            usuario.setNome("Usuario normal");
             usuario.setEmail("usuario@teste.com");
             usuario.setSenha(passwordEncoder.encode("usuario123"));
             usuario.setCpf("22222222222");

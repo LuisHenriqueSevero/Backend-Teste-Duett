@@ -10,7 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import java.util.Collections;
+import java.util.Map;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/auth")
@@ -25,7 +26,6 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    //Cadastro
     @PostMapping("/cadastrar")
     public ResponseEntity<?> register(@RequestBody UserDTO userDTO) {
         if (userDTO.getNome() == null || userDTO.getNome().trim().isEmpty()) {
@@ -68,13 +68,23 @@ public class AuthController {
         return ResponseEntity.ok("Usuário cadastrado com sucesso.");
     }
 
-    //Logar
-   @PostMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
         try {
             String token = authService.login(loginDTO.getEmail(), loginDTO.getSenha());
-            return ResponseEntity.ok().body(Collections.singletonMap("token", token));
+            User user = authService.findUserByEmail(loginDTO.getEmail());
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", token);
+            response.put("user", Map.of(
+                "id", user.getId(),
+                "nome", user.getNome(),
+                "email", user.getEmail(),
+                "perfil", user.getPerfil()
+            ));
+            return ResponseEntity.ok().body(response);
         } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }

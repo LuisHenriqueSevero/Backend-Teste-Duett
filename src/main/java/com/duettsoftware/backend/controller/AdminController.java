@@ -11,19 +11,20 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
+@PreAuthorize("hasAuthority('Administrador')")
 public class AdminController {
 
     @Autowired
     private UserRepository userRepository;
 
     @GetMapping("/usuarios")
-    @PreAuthorize("hasRole('Administrador')")
+    @PreAuthorize("hasAuthority('Administrador')") 
     public List<User> listarUsuarios() {
         return userRepository.findAll();
     }
 
     @DeleteMapping("/usuarios/{id}")
-    @PreAuthorize("hasRole('Administrador')")
+    @PreAuthorize("hasAuthority('Administrador')")
     public ResponseEntity<?> excluirUsuario(@PathVariable Long id) {
         return userRepository.findById(id).map(user -> {
             userRepository.delete(user);

@@ -25,10 +25,15 @@ public class UserController {
 
         if (!passwordEncoder.matches(dto.getSenhaAntiga(), user.getPassword())) {
             return ResponseEntity.badRequest().body("Senha antiga incorreta");
+            
         }
 
         if (!dto.getNovaSenha().equals(dto.getConfirmacaoNovaSenha())) {
             return ResponseEntity.badRequest().body("Nova senha e confirmação não coincidem");
+        }
+
+        if (dto.getNovaSenha() == null || dto.getNovaSenha().length() < 6) {
+            return ResponseEntity.badRequest().body("A senha deve ter pelo menos 6 caracteres.");
         }
 
         user.setSenha(passwordEncoder.encode(dto.getNovaSenha()));
