@@ -29,7 +29,6 @@ public class User implements UserDetails {
 
     private String perfil; // Usuario ou Administrador
 
-    // Implementação do UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(() -> "ROLE_" + perfil);

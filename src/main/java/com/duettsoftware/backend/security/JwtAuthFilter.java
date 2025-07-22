@@ -69,7 +69,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            // Token inválido ou expirado, não faz nada
         }
 
         filterChain.doFilter(request, response);

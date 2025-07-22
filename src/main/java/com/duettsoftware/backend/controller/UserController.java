@@ -21,7 +21,7 @@ public class UserController {
 
     @PutMapping("/alterarsenha")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDTO dto, Authentication authentication) {
-        User user = (User) authentication.getPrincipal(); // agora retorna o User direto
+        User user = (User) authentication.getPrincipal();
 
         if (!passwordEncoder.matches(dto.getSenhaAntiga(), user.getPassword())) {
             return ResponseEntity.badRequest().body("Senha antiga incorreta");
@@ -31,7 +31,6 @@ public class UserController {
             return ResponseEntity.badRequest().body("Nova senha e confirmação não coincidem");
         }
 
-        // Atualiza a senha com hash
         user.setSenha(passwordEncoder.encode(dto.getNovaSenha()));
         userRepository.save(user);
 
